@@ -1,0 +1,60 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+  color-scheme: light;
+}
+
+/* Force light theme for all elements */
+* {
+  color-scheme: light;
+}
+
+@keyframes fadeInStaggered {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-in-staggered {
+  opacity: 0;
+  animation: fadeInStaggered 0.5s cubic-bezier(0.4,0,0.2,1) forwards;
+}
+
+@keyframes fadeInCard {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.fade-in-card {
+  opacity: 0;
+  animation: fadeInCard 0.7s cubic-bezier(0.4,0,0.2,1) forwards;
+}
+
+@keyframes cardAppear {
+  from {
+    opacity: 0;
+    transform: translateY(40px) scale(0.96);
+    filter: blur(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+.card-appear {
+  opacity: 0;
+  animation: cardAppear 0.9s cubic-bezier(0.4,0,0.2,1) forwards;
+}
