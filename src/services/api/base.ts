@@ -2,15 +2,20 @@
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL || '/api';
 
 export const apiClient = {
-  get: async <T>(url: string, config?: RequestInit): Promise<{ data: T }> => {
+  get: async <T>(url: string, config?: RequestInit): Promise<T> => {
     const res = await fetch(`${BASE_URL}${url}`, {
       method: "GET",
       headers: { "Content-Type": "application/json", ...(config?.headers || {}) },
       ...config,
     });
-    if (!res.ok) throw new Error(await res.text());
-    const data = await res.json();
-    return { data };
+    if (!res.ok) {
+      const errorText = await res.text();
+      throw new Error(errorText || `API request failed: ${res.status}`);
+    }
+    const json = await res.json();
+    // If the response has a 'data' field, return it directly (our API format)
+    // Otherwise return the whole response
+    return (json && typeof json === 'object' && 'data' in json) ? json.data : json;
   },
 
   post: async <T>(url: string, data?: unknown, config?: RequestInit): Promise<{ data: T }> => {

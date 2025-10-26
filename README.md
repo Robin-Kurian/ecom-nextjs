@@ -5,8 +5,9 @@ A feature-rich e-commerce platform built with **Next.js 15**, **React 19**, **Ty
 ## 🚀 Features
 
 ### 🎯 Core Features
+- ✅ **Database Integration** - Neon (serverless Postgres) for product & menu data
 - ✅ **Dynamic Navigation System** - API-driven mega menu with age-based categories
-- ✅ **Product Catalog** - Advanced filtering, search, and pagination
+- ✅ **Product Catalog** - Database-powered products with offers
 - ✅ **Search Functionality** - Debounced search with real-time results
 - ✅ **Responsive Design** - Mobile-first approach with Tailwind CSS
 - ✅ **User Authentication** - JWT-based authentication system
@@ -29,11 +30,12 @@ A feature-rich e-commerce platform built with **Next.js 15**, **React 19**, **Ty
 1. [Quick Start](#quick-start)
 2. [Project Structure](#project-structure)
 3. [Frontend Development](#frontend-development)
-4. [Backend Development](#backend-development)
-5. [API Documentation](#api-documentation)
-6. [Configuration](#configuration)
-7. [Deployment](#deployment)
-8. [Contributing](#contributing)
+4. [Database Integration](#database-integration)
+5. [Backend Development](#backend-development)
+6. [API Documentation](#api-documentation)
+7. [Configuration](#configuration)
+8. [Deployment](#deployment)
+9. [Contributing](#contributing)
 
 ---
 
@@ -745,9 +747,104 @@ module.exports = {
 
 ---
 
+## 💾 Database Integration
+
+### Neon + Netlify Setup
+
+This project uses **Neon (serverless Postgres)** integrated with **Netlify**.
+
+#### Quick Setup
+
+1. **Database Connection**
+   - Netlify automatically sets `NETLIFY_DATABASE_URL` when Neon extension is enabled
+   - For local dev, add to `.env.local`:
+     ```env
+     NETLIFY_DATABASE_URL=postgresql://user:password@hostname/dbname?sslmode=require
+     ```
+
+2. **Create Tables**
+   - Go to Netlify Dashboard → Integrations → Neon → View Database
+   - Run SQL from `src/lib/db/schema.sql` to create tables
+
+3. **Insert Sample Data**
+   - Run SQL from `src/lib/db/sample-data.sql` (optional)
+   - Run SQL from `src/lib/db/menu-sample-data.sql` for navigation menu
+
+#### Database Architecture
+
+```
+Database (Neon)
+├── products        # Product catalog with offers
+├── users           # User accounts
+├── orders          # Customer orders
+├── menu_groups     # Navigation groups (NEWBORN, BABY, etc.)
+├── menu_sections   # Sections within groups
+└── menu_categories # Categories within sections
+```
+
+#### Performance & Caching
+
+**Two-Layer Caching System**:
+- **Server Memory Cache**: In-memory cache for 1 hour (auto-invalidates)
+- **Browser Cache**: HTTP cache headers with `stale-while-revalidate`
+
+**Expected Performance**:
+- First load: ~200-300ms (database query)
+- Cached load: ~1ms (memory) + instant (browser)
+- Cache cleared on server restart or manually via API
+
+#### Usage Examples
+
+```typescript
+// Fetch products from database
+import { getAllProducts } from "@/services/api/product.api";
+const products = await getAllProducts();
+
+// Fetch navigation menu
+import { getNavbarGroups } from "@/services/api/menu.api";
+const menuGroups = await getNavbarGroups();
+
+// Database is now the single source of truth
+// No static data fallbacks
+```
+
+#### File Structure
+
+```
+src/lib/db/
+├── index.ts              # Database client
+├── queries.ts            # Product queries
+├── menu-queries.ts       # Menu queries
+├── menu-cache.ts         # In-memory caching
+├── schema.sql            # Table definitions
+├── sample-data.sql       # Sample products
+└── menu-sample-data.sql  # Sample menu data
+```
+
+#### Troubleshooting
+
+**"Database not available" Error**:
+- Check `NETLIFY_DATABASE_URL` is set in environment
+- Verify Neon extension is enabled in Netlify
+- Ensure tables are created (run schema.sql)
+
+**No Data Showing**:
+- Verify database has data (check in Neon console)
+- Run sample data SQL files to populate
+- Check browser console for errors
+
+**Menu Not Loading**:
+- Verify menu tables exist: `menu_groups`, `menu_sections`, `menu_categories`
+- Run `menu-tables-fix.sql` if schema mismatch
+- Run `menu-sample-data.sql` to insert navigation data
+
+For detailed database setup, see `src/lib/db/README.md`.
+
+---
+
 ## 🚀 Deployment
 
-### 🌐 Frontend Deployment (Vercel)
+### 🌐 Frontend Deployment (Vercel/Netlify)
 
 1. **Connect Repository**
    ```bash

@@ -35,10 +35,28 @@ export default function NavBar() {
     const fetchMenuData = async () => {
       try {
         setLoading(true);
-        const groups = await getNavbarGroups();
-        setMenuGroups(groups);
-      } catch (error) {
-        console.error('Failed to load menu data:', error);
+        // Fetch groups from fast endpoint (cached on server)
+        const response = await fetch('/api/menu/groups');
+        if (!response.ok) {
+          throw new Error('Failed to fetch menu');
+        }
+        const result = await response.json();
+        
+        if (result.data && Array.isArray(result.data)) {
+          setMenuGroups(result.data);
+        } else {
+          // Fallback
+          const groups = await getNavbarGroups();
+          setMenuGroups(groups);
+        }
+      } catch {
+        // Try fallback
+        try {
+          const groups = await getNavbarGroups();
+          setMenuGroups(groups);
+        } catch {
+          // Silent fail - keep loading state false
+        }
       } finally {
         setLoading(false);
       }

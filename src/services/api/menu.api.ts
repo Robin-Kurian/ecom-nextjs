@@ -55,28 +55,24 @@ export interface NavigationMenu {
 
 // API Functions
 export const getNavigationMenu = async (): Promise<NavigationMenu> => {
-  try {
-    const response = await apiClient.get<NavigationMenu>('/menu/navigation');
-    return response.data;
-  } catch (error) {
-    console.error('Error fetching navigation menu:', error);
-    // Fallback to basic structure if API fails
-    return {
-      id: 'fallback-menu',
-      name: 'Fallback Menu',
-      version: '1.0.0',
-      lastUpdated: new Date().toISOString(),
-      groups: [],
-    };
+  const response = await apiClient.get<NavigationMenu>('/menu/navigation');
+  if (response && response.groups) {
+    return response;
   }
+  return {
+    id: 'fallback-menu',
+    name: 'Fallback Menu',
+    version: '1.0.0',
+    lastUpdated: new Date().toISOString(),
+    groups: [],
+  };
 };
 
 export const getMenuGroup = async (groupId: string): Promise<MenuGroup | null> => {
   try {
     const response = await apiClient.get<MenuGroup>(`/menu/groups/${groupId}`);
-    return response.data;
-  } catch (error) {
-    console.error(`Error fetching menu group ${groupId}:`, error);
+    return response;
+  } catch {
     return null;
   }
 };
@@ -84,11 +80,11 @@ export const getMenuGroup = async (groupId: string): Promise<MenuGroup | null> =
 export const getNavbarGroups = async (): Promise<MenuGroup[]> => {
   try {
     const menu = await getNavigationMenu();
-    return menu.groups.filter(group => 
-      group.isActive && group.displayOptions?.showInNavbar
-    ).sort((a, b) => a.sortOrder - b.sortOrder);
-  } catch (error) {
-    console.error('Error fetching navbar groups:', error);
+    if (!menu || !Array.isArray(menu.groups)) return [];
+    return menu.groups
+      .filter(group => group.isActive && group.displayOptions?.showInNavbar)
+      .sort((a, b) => a.sortOrder - b.sortOrder);
+  } catch {
     return [];
   }
 };
@@ -96,21 +92,18 @@ export const getNavbarGroups = async (): Promise<MenuGroup[]> => {
 export const getFeaturedCategories = async (): Promise<MenuCategory[]> => {
   try {
     const response = await apiClient.get<MenuCategory[]>('/menu/featured');
-    return response.data;
-  } catch (error) {
-    console.error('Error fetching featured categories:', error);
+    return Array.isArray(response) ? response : [];
+  } catch {
     return [];
   }
 };
 
 export const searchMenuCategories = async (query: string): Promise<MenuCategory[]> => {
+  if (!query.trim()) return [];
   try {
-    const response = await apiClient.get<MenuCategory[]>('/menu/search', {
-      params: { q: query }
-    } as RequestInit);
-    return response.data;
-  } catch (error) {
-    console.error('Error searching menu categories:', error);
+    const response = await apiClient.get<MenuCategory[]>(`/menu/search?q=${encodeURIComponent(query)}`);
+    return Array.isArray(response) ? response : [];
+  } catch {
     return [];
   }
 }; 

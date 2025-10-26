@@ -1,13 +1,18 @@
 import { Metadata } from "next";
+import { getAllProducts } from "@/services/api/product.api";
 import OffersProductGrid from "./OffersProductGrid";
-import { products } from "@/data/products";
 
 export const metadata: Metadata = {
   title: "Special Offers & Deals | NEXTJS-ECOM",
   description: "Discover amazing deals and special offers on baby products. Limited time discounts, bundles, and clearance items.",
 };
 
-export default function OffersPage() {
+export const dynamic = 'force-dynamic';
+
+export default async function OffersPage() {
+  // Fetch products from database
+  const products = await getAllProducts();
+
   // Filter products that have offers or are in the offers category
   const offerProducts = products.filter(product => 
     product.category === "offers" || product.offer !== null

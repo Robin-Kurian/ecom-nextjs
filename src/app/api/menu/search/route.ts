@@ -129,8 +129,7 @@ export async function GET(request: Request) {
     );
     
     return NextResponse.json(filteredCategories);
-  } catch (error) {
-    console.error('Error searching menu categories:', error);
+  } catch {
     return NextResponse.json(
       { error: 'Failed to search menu categories' },
       { status: 500 }
