@@ -256,10 +256,10 @@ export default function NavBar() {
       {/* Mobile Nav */}
       <div className="md:hidden flex flex-col">
         <button
-          className="flex items-center justify-between px-4 py-3 border-b text-base font-semibold text-gray-900 hover:bg-gray-50 transition-colors"
+          className="flex items-center justify-between px-4 py-3 borde text-base font-semibold text-gray-900 hover:bg-gray-50 transition-colors"
           onClick={() => setMobileOpen((v) => !v)}
         >
-          <span>BABY SHOP MENU</span>
+          <span>CATEGORIES</span>
           <svg 
             className={`w-5 h-5 transition-transform duration-200 ${mobileOpen ? 'rotate-180' : ''}`} 
             fill="none" 
@@ -274,12 +274,12 @@ export default function NavBar() {
           <div className="flex flex-col bg-white border-b shadow-lg">
             {categories.map((cat, idx) => (
               <div key={cat.label} className="border-b border-gray-100 last:border-b-0">
-                <button
-                  className="w-full text-left px-4 py-3 font-medium text-gray-900 flex items-center justify-between hover:bg-blue-50 transition-colors"
-                  onClick={() => setMobileCat(mobileCat === idx ? null : idx)}
-                >
-                  <span>{cat.label}</span>
-                  {(cat.subcategories.length > 0 || cat.megaMenu) && (
+                {(cat.subcategories.length > 0 || cat.megaMenu) ? (
+                  <button
+                    className="w-full text-left px-4 py-3 font-medium text-gray-900 flex items-center justify-between hover:bg-blue-50 transition-colors"
+                    onClick={() => setMobileCat(mobileCat === idx ? null : idx)}
+                  >
+                    <span>{cat.label}</span>
                     <svg 
                       className={`w-4 h-4 transition-transform duration-200 ${mobileCat === idx ? 'rotate-90' : ''}`} 
                       fill="none" 
@@ -288,8 +288,21 @@ export default function NavBar() {
                     >
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                     </svg>
-                  )}
-                </button>
+                  </button>
+                ) : (
+                  <Link
+                    href={cat.href}
+                    className="w-full text-left px-4 py-3 font-medium text-gray-900 flex items-center justify-between hover:bg-blue-50 transition-colors"
+                    onClick={() => {
+                      setTimeout(() => {
+                        setMobileOpen(false);
+                        setMobileCat(null);
+                      }, 150);
+                    }}
+                  >
+                    <span>{cat.label}</span>
+                  </Link>
+                )}
                 
                 {(cat.subcategories.length > 0 || cat.megaMenu) && mobileCat === idx && (
                   <div className="flex flex-col bg-gray-50 border-t border-gray-100">

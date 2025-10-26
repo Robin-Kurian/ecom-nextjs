@@ -13,10 +13,10 @@ export default function Header({ onSearchClick, searchOpen, searchIcon, onCartCl
   return (
     <header className="w-full bg-white border-b border-gray-400 flex items-center justify-between px-4 md:px-8 h-14 relative z-50">
       {/* Left spacer for symmetry */}
-      <div className="flex-1 flex items-center justify-start min-w-0" />
+      <div className="hidden md:flex flex-1 items-center justify-start min-w-0" />
       {/* Centered Logo */}
-      <div className="flex-1 flex items-center justify-center min-w-0">
-        <Link href="/" className="text-3xl font-extrabold tracking-widest text-gray-900 select-none">NEXTJS-ECOM</Link>
+      <div className="flex items-center justify-start md:flex-1 md:justify-center min-w-0">
+        <Link href="/" className="text-3xl font-extrabold tracking-widest text-gray-900 select-none">ECOM</Link>
       </div>
       {/* Right Icons */}
       <div className="flex-1 flex items-center justify-end gap-2 min-w-0">
