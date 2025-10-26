@@ -45,10 +45,10 @@ const mockGroups = [
 
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const groupId = params.id;
+    const { id: groupId } = await params;
     
     // Simulate API delay
     await new Promise(resolve => setTimeout(resolve, 50));
