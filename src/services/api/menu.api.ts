@@ -56,7 +56,7 @@ export interface NavigationMenu {
 // API Functions
 export const getNavigationMenu = async (): Promise<NavigationMenu> => {
   try {
-    const response = await apiClient.get('/menu/navigation');
+    const response = await apiClient.get<NavigationMenu>('/menu/navigation');
     return response.data;
   } catch (error) {
     console.error('Error fetching navigation menu:', error);
@@ -73,7 +73,7 @@ export const getNavigationMenu = async (): Promise<NavigationMenu> => {
 
 export const getMenuGroup = async (groupId: string): Promise<MenuGroup | null> => {
   try {
-    const response = await apiClient.get(`/menu/groups/${groupId}`);
+    const response = await apiClient.get<MenuGroup>(`/menu/groups/${groupId}`);
     return response.data;
   } catch (error) {
     console.error(`Error fetching menu group ${groupId}:`, error);
@@ -95,7 +95,7 @@ export const getNavbarGroups = async (): Promise<MenuGroup[]> => {
 
 export const getFeaturedCategories = async (): Promise<MenuCategory[]> => {
   try {
-    const response = await apiClient.get('/menu/featured');
+    const response = await apiClient.get<MenuCategory[]>('/menu/featured');
     return response.data;
   } catch (error) {
     console.error('Error fetching featured categories:', error);
@@ -105,9 +105,9 @@ export const getFeaturedCategories = async (): Promise<MenuCategory[]> => {
 
 export const searchMenuCategories = async (query: string): Promise<MenuCategory[]> => {
   try {
-    const response = await apiClient.get('/menu/search', {
+    const response = await apiClient.get<MenuCategory[]>('/menu/search', {
       params: { q: query }
-    });
+    } as RequestInit);
     return response.data;
   } catch (error) {
     console.error('Error searching menu categories:', error);

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { Product } from "@/types/product";
 import { getAllProducts } from "@/services/api/product.api";
@@ -16,7 +16,7 @@ const sortOptions = [
   { label: "Rating", value: "rating" },
 ];
 
-export default function ProductsPage() {
+function ProductsPageContent() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -114,5 +114,19 @@ export default function ProductsPage() {
         )}
       </div>
     </PageContainer>
+  );
+}
+
+export default function ProductsPage() {
+  return (
+    <Suspense fallback={
+      <PageContainer>
+        <div className="flex justify-center py-12">
+          <Loader className="w-8 h-8" />
+        </div>
+      </PageContainer>
+    }>
+      <ProductsPageContent />
+    </Suspense>
   );
 } 

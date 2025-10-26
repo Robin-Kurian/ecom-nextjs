@@ -13,7 +13,7 @@ export const apiClient = {
     return { data };
   },
 
-  post: async <T>(url: string, data?: any, config?: RequestInit): Promise<{ data: T }> => {
+  post: async <T>(url: string, data?: unknown, config?: RequestInit): Promise<{ data: T }> => {
     const res = await fetch(`${BASE_URL}${url}`, {
       method: "POST",
       headers: { "Content-Type": "application/json", ...(config?.headers || {}) },
@@ -25,7 +25,7 @@ export const apiClient = {
     return { data: responseData };
   },
 
-  put: async <T>(url: string, data?: any, config?: RequestInit): Promise<{ data: T }> => {
+  put: async <T>(url: string, data?: unknown, config?: RequestInit): Promise<{ data: T }> => {
     const res = await fetch(`${BASE_URL}${url}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json", ...(config?.headers || {}) },
@@ -50,7 +50,7 @@ export const apiClient = {
 };
 
 // Legacy functions for backward compatibility
-export async function post<T>(url: string, data?: any, config?: RequestInit): Promise<T> {
+export async function post<T>(url: string, data?: unknown, config?: RequestInit): Promise<T> {
   const res = await fetch(url, {
     method: "POST",
     headers: { "Content-Type": "application/json", ...(config?.headers || {}) },

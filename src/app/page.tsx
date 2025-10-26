@@ -36,7 +36,8 @@ export default function Home() {
   useEffect(() => {
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
     timeoutRef.current = setTimeout(() => {
-      next();
+      // next();
+      setCurrent((c) => (c === slides.length - 1 ? 0 : c + 1));
     }, 4000);
     return () => { if (timeoutRef.current) clearTimeout(timeoutRef.current); };
   }, [current, slides.length]);

@@ -1,3 +1,35 @@
+// User
+export interface User {
+  id: number;
+  username: string;
+  email: string;
+  role: "admin" | "customer";
+  avatar?: string;
+}
+
+// Product
+export interface ProductOffer {
+  id: number;
+  title: string;
+  discount: number;
+  description?: string;
+}
+
+export interface Product {
+  id: number;
+  name: string;
+  description: string;
+  price: number;
+  image: string;
+  category: string;
+  stock: number;
+  rating: number;
+  num_reviews: number;
+  offer?: ProductOffer | null;
+  newArrival?: boolean;
+  updatedAt?: string;
+}
+
 // Order
 export interface Order {
   id: number;
@@ -25,8 +57,8 @@ export interface Review {
   created_at: string;
 }
 
-// Offer
-export interface Offer {
+// Promotion Offer
+export interface PromotionOffer {
   id: number;
   title: string;
   description: string;

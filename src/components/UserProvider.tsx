@@ -4,7 +4,11 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { fetchUser, isAuthenticated, logout } from "@/services/auth";
 import { User } from "@/types";
 
-export const UserContext = createContext<{ user: User | null; setUser: (u: User | null) => void }>({ user: null, setUser: () => {} });
+export const UserContext = createContext<{ 
+  user: User | null; 
+  setUser: (u: User | null) => void;
+  logout: () => void;
+}>({ user: null, setUser: () => {}, logout: () => {} });
 
 export const useUser = () => {
   const context = useContext(UserContext);
@@ -30,7 +34,7 @@ export default function UserProvider({ children }: { children: React.ReactNode }
   }
 
   return (
-    <UserContext.Provider value={{ user, setUser }}>
+    <UserContext.Provider value={{ user, setUser, logout: handleLogout }}>
       {children}
     </UserContext.Provider>
   );
