@@ -1,22 +1,21 @@
-import { products } from "@/data/products";
 import { Product } from "@/types/product";
+import { apiClient } from "./base";
 
-export function getAllProducts(): Promise<Product[]> {
-  return Promise.resolve(products);
+/**
+ * Product API functions that fetch from database via API routes
+ */
+export async function getAllProducts(): Promise<Product[]> {
+  const products = await apiClient.get<Product[]>('/products');
+  return Array.isArray(products) ? products : [];
 }
 
-export function getProductById(id: number | string): Promise<Product | undefined> {
-  return Promise.resolve(products.find(p => p.id === Number(id)));
+export async function getProductById(id: number | string): Promise<Product | undefined> {
+  const products = await apiClient.get<Product[]>(`/products?id=${id}`);
+  return Array.isArray(products) ? products.find(p => p.id === Number(id)) : undefined;
 }
 
-export function searchProducts(query: string): Promise<Product[]> {
-  if (!query.trim()) return Promise.resolve([]);
-  const q = query.toLowerCase();
-  return Promise.resolve(
-    products.filter(
-      (p) =>
-        p.name.toLowerCase().includes(q) ||
-        p.description.toLowerCase().includes(q)
-    )
-  );
+export async function searchProducts(query: string): Promise<Product[]> {
+  if (!query.trim()) return [];
+  const products = await apiClient.get<Product[]>(`/products?search=${encodeURIComponent(query)}`);
+  return Array.isArray(products) ? products : [];
 } 

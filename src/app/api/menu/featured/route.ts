@@ -58,8 +58,7 @@ export async function GET() {
     await new Promise(resolve => setTimeout(resolve, 50));
     
     return NextResponse.json(mockFeaturedCategories);
-  } catch (error) {
-    console.error('Error fetching featured categories:', error);
+  } catch {
     return NextResponse.json(
       { error: 'Failed to fetch featured categories' },
       { status: 500 }
